@@ -10,19 +10,10 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Forward declaration
+class ClockManager;
+#include "clock_manager.h"
 
-#include "sysclk/ipc.h"
-#include "sysclk/board.h"
-#include "sysclk/clock_manager.h"
-#include "sysclk/apm.h"
-#include "sysclk/config.h"
-#include "sysclk/errors.h"
-#include "sysclk/i2c.h"
-#include "sysclk/psm_ext.h"
-
-#ifdef __cplusplus
+namespace PsmExt {
+    void ChargingHandler(ClockManager* instance);
 }
-#endif

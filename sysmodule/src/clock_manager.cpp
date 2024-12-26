@@ -15,6 +15,29 @@
 #include "process_management.h"
 #include "errors.h"
 
+ClockManager* ClockManager::instance = NULL;
+
+ClockManager* ClockManager::GetInstance()
+{
+    return instance;
+}
+
+void ClockManager::Initialize()
+{
+    if(!instance)
+    {
+        instance = new ClockManager();
+    }
+}
+
+void ClockManager::Exit()
+{
+    if(instance)
+    {
+        delete instance;
+    }
+}
+
 ClockManager::ClockManager()
 {
     this->config = Config::CreateDefault();
@@ -34,12 +57,17 @@ ClockManager::ClockManager()
     this->running = false;
     this->lastTempLogNs = 0;
     this->lastCsvWriteNs = 0;
+    this->batteryChargingDisabledOverride = false;
 }
 
 ClockManager::~ClockManager()
 {
     delete this->config;
     delete this->context;
+    if(instance)
+    {
+        delete instance;
+    }
 }
 
 SysClkContext ClockManager::GetCurrentContext()
@@ -213,6 +241,8 @@ void ClockManager::WaitForNextTick()
 
 bool ClockManager::RefreshContext()
 {
+    PsmExt::ChargingHandler(this);
+
     bool hasChanged = false;
 
     bool enabled = this->GetConfig()->Enabled();
@@ -326,4 +356,13 @@ bool ClockManager::RefreshContext()
     }
 
     return hasChanged;
+}
+
+bool ClockManager::GetBatteryChargingDisabledOverride() {
+    return this->batteryChargingDisabledOverride;
+}
+
+Result ClockManager::SetBatteryChargingDisabledOverride(bool toggle_true) {
+    this->batteryChargingDisabledOverride = toggle_true;
+    return 0;
 }

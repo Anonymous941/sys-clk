@@ -13,12 +13,16 @@
 #include <stdint.h>
 #include <stddef.h>
 
+const uint32_t CHARGING_CURRENT_MA_LIMIT = 3000;
+
 typedef enum {
     SysClkConfigValue_PollingIntervalMs = 0,
     SysClkConfigValue_TempLogIntervalMs,
     SysClkConfigValue_FreqLogIntervalMs,
     SysClkConfigValue_PowerLogIntervalMs,
     SysClkConfigValue_CsvWriteIntervalMs,
+    SysClkConfigValue_ChargingCurrentLimit,
+    SysClkConfigValue_ChargingLimitPercentage,
     SysClkConfigValue_EnumMax,
 } SysClkConfigValue;
 
@@ -40,6 +44,10 @@ static inline const char* sysclkFormatConfigValue(SysClkConfigValue val, bool pr
             return pretty ? "Power logging interval (ms)" : "power_log_interval_ms";
         case SysClkConfigValue_CsvWriteIntervalMs:
             return pretty ? "CSV write interval (ms)" : "csv_write_interval_ms";
+        case SysClkConfigValue_ChargingCurrentLimit:
+            return pretty ? "Charging Current Limit (mA)" : "charging_current";
+        case SysClkConfigValue_ChargingLimitPercentage:
+            return pretty ? "Charging Limit (%%)" : "charging_limit_perc";
         default:
             return NULL;
     }
@@ -56,6 +64,10 @@ static inline uint64_t sysclkDefaultConfigValue(SysClkConfigValue val)
         case SysClkConfigValue_PowerLogIntervalMs:
         case SysClkConfigValue_CsvWriteIntervalMs:
             return 0ULL;
+        case SysClkConfigValue_ChargingCurrentLimit:
+            return 2000ULL;
+        case SysClkConfigValue_ChargingLimitPercentage:
+            return 100ULL;
         default:
             return 0ULL;
     }
@@ -72,6 +84,10 @@ static inline uint64_t sysclkValidConfigValue(SysClkConfigValue val, uint64_t in
         case SysClkConfigValue_PowerLogIntervalMs:
         case SysClkConfigValue_CsvWriteIntervalMs:
             return input >= 0;
+        case SysClkConfigValue_ChargingCurrentLimit:
+            return (input >= 100 && input <= CHARGING_CURRENT_MA_LIMIT && input % 100 == 0);
+        case SysClkConfigValue_ChargingLimitPercentage:
+            return (input <= 100 && input >= 20);
         default:
             return false;
     }

@@ -31,6 +31,8 @@ Result sysclkIpcSetProfiles(u64 tid, SysClkTitleProfileList* profiles);
 Result sysclkIpcGetConfigValues(SysClkConfigValueList* out_configValues);
 Result sysclkIpcSetConfigValues(SysClkConfigValueList* configValues);
 Result sysclkIpcGetFreqList(SysClkModule module, u32* list, u32 maxCount, u32* outCount);
+Result sysclkIpcGetBatteryChargingDisabledOverride(bool* out_is_true);
+Result sysclkIpcSetBatteryChargingDisabledOverride(bool toggle_true);
 
 static inline Result sysclkIpcRemoveOverride(SysClkModule module)
 {

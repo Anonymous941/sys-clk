@@ -31,6 +31,8 @@ enum SysClkIpcCmd
     SysClkIpcCmd_GetConfigValues = 9,
     SysClkIpcCmd_SetConfigValues = 10,
     SysClkIpcCmd_GetFreqList = 11,
+    SysClkIpcCmd_GetBatteryChargingDisabledOverride = 12,
+    SysClkIpcCmd_SetBatteryChargingDisabledOverride = 13,
 };
 
 

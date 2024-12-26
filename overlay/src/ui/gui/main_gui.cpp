@@ -13,6 +13,7 @@
 #include "fatal_gui.h"
 #include "app_profile_gui.h"
 #include "global_override_gui.h"
+#include "battery_gui.h"
 
 void MainGui::listUI()
 {
@@ -54,6 +55,18 @@ void MainGui::listUI()
         return false;
     });
     this->listElement->addItem(globalOverrideItem);
+
+    tsl::elm::ListItem* batteryItem = new tsl::elm::ListItem("Battery settings");
+    batteryItem->setClickListener([this](u64 keys) {
+        if((keys & HidNpadButton_A) == HidNpadButton_A && this->context)
+        {
+            tsl::changeTo<BatteryGui>();
+            return true;
+        }
+
+        return false;
+    });
+    this->listElement->addItem(batteryItem);
 }
 
 void MainGui::refresh()

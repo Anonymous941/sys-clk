@@ -16,12 +16,14 @@
 #include "config.h"
 #include "board.h"
 #include <nxExt/cpp/lockable_mutex.h>
+#include "extras.h"
 
 class ClockManager
 {
   public:
-    ClockManager();
-    virtual ~ClockManager();
+    static ClockManager* GetInstance();
+    static void Initialize();
+    static void Exit();
 
     SysClkContext GetCurrentContext();
     Config* GetConfig();
@@ -30,8 +32,13 @@ class ClockManager
     void GetFreqList(SysClkModule module, std::uint32_t* list, std::uint32_t maxCount, std::uint32_t* outCount);
     void Tick();
     void WaitForNextTick();
+    bool GetBatteryChargingDisabledOverride();
+    Result SetBatteryChargingDisabledOverride(bool toggle_true);
 
   protected:
+    ClockManager();
+    virtual ~ClockManager();
+
     bool IsAssignableHz(SysClkModule module, std::uint32_t hz);
     std::uint32_t GetMaxAllowedHz(SysClkModule module, SysClkProfile profile);
     std::uint32_t GetNearestHz(SysClkModule module, std::uint32_t inHz, std::uint32_t maxHz);
@@ -39,6 +46,7 @@ class ClockManager
     void RefreshFreqTableRow(SysClkModule module);
     bool RefreshContext();
 
+    static ClockManager *instance;
     std::atomic_bool running;
     LockableMutex contextMutex;
     struct {
@@ -51,4 +59,5 @@ class ClockManager
     std::uint64_t lastFreqLogNs;
     std::uint64_t lastPowerLogNs;
     std::uint64_t lastCsvWriteNs;
+    bool batteryChargingDisabledOverride;
 };

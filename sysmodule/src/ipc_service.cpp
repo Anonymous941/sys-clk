@@ -167,6 +167,15 @@ Result IpcService::ServiceHandlerFunc(void* arg, const IpcServerRequest* r, u8* 
                 );
             }
             break;
+        case SysClkIpcCmd_GetBatteryChargingDisabledOverride:
+            *out_dataSize = sizeof(bool);
+            return ipcSrv->GetBatteryChargingDisabledOverride((bool*)out_data);
+        case SysClkIpcCmd_SetBatteryChargingDisabledOverride:
+            if (r->data.size >= sizeof(bool)) {
+                bool toggle_true = *((bool*)(r->data.ptr));
+                return ipcSrv->SetBatteryChargingDisabledOverride(toggle_true);
+            }
+            break;
     }
 
     return SYSCLK_ERROR(Generic);
@@ -317,4 +326,13 @@ Result IpcService::GetFreqList(SysClkIpc_GetFreqList_Args* args, std::uint32_t* 
     this->clockMgr->GetFreqList(args->module, out_list, args->maxCount, out_count);
 
     return 0;
+}
+
+Result IpcService::GetBatteryChargingDisabledOverride(bool* out_is_true) {
+    *out_is_true = ClockManager::GetInstance()->GetBatteryChargingDisabledOverride();
+    return 0;
+}
+
+Result IpcService::SetBatteryChargingDisabledOverride(bool toggle_true) {
+    return ClockManager::GetInstance()->SetBatteryChargingDisabledOverride(toggle_true);
 }

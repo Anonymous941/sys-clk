@@ -126,3 +126,13 @@ Result sysclkIpcGetFreqList(SysClkModule module, u32* list, u32 maxCount, u32* o
         .buffers = {{list, maxCount * sizeof(u32)}},
     );
 }
+
+Result sysclkIpcGetBatteryChargingDisabledOverride(bool* out_is_true)
+{
+    return serviceDispatchOut(&g_sysclkSrv, SysClkIpcCmd_GetBatteryChargingDisabledOverride, *out_is_true);
+}
+
+Result sysclkIpcSetBatteryChargingDisabledOverride(bool toggle_true)
+{
+    return serviceDispatchIn(&g_sysclkSrv, SysClkIpcCmd_SetBatteryChargingDisabledOverride, toggle_true);
+}
